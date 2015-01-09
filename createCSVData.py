@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import sklearn.cluster
 from pprint import pprint
+import os
 from makeArrayFromPrint import makearrayfromprint
 json_data=open('data.txt')
 import string
@@ -90,8 +91,13 @@ for i,val in enumerate(c):
         clusters[val].append(messages[i])
 
 for key in clusters:
-    with open(str(key) + ".txt", 'w+') as myfile:
+    filename = str(key) + ".txt"
+    try:
+        os.remove(filename)
+    except OSError:
+        pass
+    with open(filename, 'w+') as myfile:
         for s in clusters[key]:
-            myfile.write(filter(lambda x: x in string.printable, s))
+            myfile.write(filter(lambda x: x in string.printable, s) + "\n")
 
 
