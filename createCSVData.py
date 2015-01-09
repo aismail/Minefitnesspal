@@ -10,7 +10,6 @@ import string
 from collections import Counter, deque
 data = json.load(json_data)
 c = Counter()
-
 STOPWORDS = {}
 stopwordsfile = "stopwords.txt"
 with open(stopwordsfile) as f:
@@ -43,7 +42,6 @@ for key in data:
         if word != "" and not isStopword(STOPWORDS,word):
             c[word]+=1
 json_data.close()
-print len(c)
 cols = []
 for key in (c):
     cols.append(key)
@@ -58,7 +56,6 @@ while rmCount < iterations:
     rmCount+=1
 NUM_COLS = len(sorted(cols)) + 1
 NUM_ROWS = len(data)
-print "number of columns: " + str(NUM_COLS)
 csvData = pd.DataFrame(data=np.zeros(shape=(NUM_ROWS,NUM_COLS)),columns=cols+["numShares!"])
 
 messages = []
@@ -71,12 +68,11 @@ for key in data:
         if word != "" and not isStopword(STOPWORDS,word):
             csvData[word][i]+=1
     i+=1
-y = csvData.ix[:,len(csvData.columns)-1]
+y = csvData.ix[:,len(csvData.columns)-1].as_matrix()
 data = csvData.ix[:,:len(csvData.columns)-1].as_matrix()
 
 MS = sklearn.cluster.AffinityPropagation()
 x = MS.fit_predict(data)
-print "length of x: " + str(len(x))
 # results from MS 
 # c = makearrayfromprint("[ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 12 0 0 0 0 0 0 0 0 0 0 0 0 6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 10 0 0 0 0 7 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 14 0 0 0 0 0 5 0 0 0 0 0 0 0 0 0 0 0 0 0 4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 15 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 3 0 0 0 0 0 0 0 0 13 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]")
 c = x
@@ -86,9 +82,15 @@ for i,val in enumerate(c):
     if val == 0:
         continue
     if clusters.get(val,None) == None:
-        clusters[val] = [messages[i]]
+        clusters[val] = [float(y[i]),messages[i]]
     else:
+        currAve = clusters[val][0]
+        newAve = (currAve*float(len(clusters[val])-1) + y[i])/float(len(clusters[val]))
         clusters[val].append(messages[i])
+
+for key in clusters:
+    print "Score for cluster " + str(key) + ": " +str(clusters[key][0])
+    clusters[key] =clusters[key][1:]
 
 for key in clusters:
     filename = str(key) + ".txt"
