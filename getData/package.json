@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "fb": "^0.7.0",
+    "fs": "0.0.2",
     "request": "^2.51.0",
     "underscore": "^1.7.0"
   }
