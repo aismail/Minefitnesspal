@@ -1,5 +1,5 @@
 # Minefitnesspal
-Recognize successful Facebook types of posts from Weight Loss Companies.
+Recognize successful types of posts from Facebook by Weight Loss Companies.
 
 #The Clusters:
 Look at the <cluster id number>.txt files to see the clusters of posts. 
