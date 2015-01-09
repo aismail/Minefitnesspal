@@ -5,6 +5,7 @@ import sklearn.cluster
 from pprint import pprint
 from makeArrayFromPrint import makearrayfromprint
 json_data=open('data.txt')
+import string
 from collections import Counter, deque
 data = json.load(json_data)
 c = Counter()
@@ -90,6 +91,7 @@ for i,val in enumerate(c):
 
 for key in clusters:
     with open(str(key) + ".txt", 'w+') as myfile:
-        myfile.write(clusters[key])
+        for s in clusters[key]:
+            myfile.write(filter(lambda x: x in string.printable, s))
 
 
