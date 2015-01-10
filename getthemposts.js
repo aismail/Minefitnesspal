@@ -4,7 +4,7 @@ var FB = require('fb');
 var fs = require('fs');
 
 FB.setAccessToken('1543530219228022|l2ghob0T2nzJOYeiCvm2XlX--ws');
-var NUM_POSTS = 500;
+var NUM_POSTS = 1000;
 if (process.argv.length !=3) {
     console.log("You must give a valid Facebook Page ID as an additional argument and nothing else.")
     return;
@@ -30,7 +30,7 @@ var getPosts = function(posts,url,depth){
         res = JSON.parse(res.body);
         if (!res || res.error) {
             console.log(!res ? 'error occurred' : res.error);
-            fs.writeFile(OUTPUT_FILE,JSON.stringify(posts), function (err) {
+            return fs.writeFile(OUTPUT_FILE,JSON.stringify(posts), function (err) {
               if (err) throw err;
               console.log('It\'s written in data.txt, despite the error.');
               return JSON.stringify(posts);
