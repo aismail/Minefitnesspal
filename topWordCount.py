@@ -16,4 +16,4 @@ for key in data:
 json_data.close()
 
 
-print len(c)
+print
